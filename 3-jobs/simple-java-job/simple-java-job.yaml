@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: simplejob
+spec:
+  template:
+    spec:
+      containers:
+      - name: simple-java-job
+        image: deanen1/simple-java-app
+        imagePullPolicy: Always
+        env:
+        - name: outcome
+          value: fail
+        - name: after
+          value: "5"
+      restartPolicy: Never
+  podFailurePolicy:
+    rules:
+    - action: FailJob
+      onExitCodes:
+        operator: NotIn
+        values: [0]
+  backoffLimit: 4
