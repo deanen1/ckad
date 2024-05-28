@@ -8,17 +8,24 @@ spec:
       containers:
       - name: simple-java-job
         image: deanen1/simple-java-app
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         env:
         - name: outcome
-          value: fail
+          value: complete
         - name: after
-          value: "5"
+          value: "20"
+        - name: exitCode
+          value: "0"
       restartPolicy: Never
   podFailurePolicy:
     rules:
     - action: FailJob
       onExitCodes:
+        operator: In
+        values: [2]
+    - action: Count
+      onExitCodes:
         operator: NotIn
-        values: [0]
+        values: [2]
   backoffLimit: 4
+  activeDeadlineSeconds: 10
